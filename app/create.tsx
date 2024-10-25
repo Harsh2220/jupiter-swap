@@ -25,8 +25,6 @@ export default function Login() {
       const seed = Bip39.mnemonicToSeedSync(mnemonic, "").slice(0, 32);
       const keypair = Keypair.fromSeed(seed);
 
-      console.log(keypair, "keypair");
-
       const wallet = {
         name: "wallet 1",
         publicKey: keypair.publicKey.toBase58(),
