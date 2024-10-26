@@ -1,4 +1,4 @@
-const primary = "#FF9EC5";
+const primary = "#FF9FC6";
 
 const black = {
   100: "#5F6368",

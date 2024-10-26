@@ -1,12 +1,11 @@
-import "react-native-get-random-values";
+import useSwapStore from "@/src/store/swap";
+import useWalletStore from "@/src/store/wallet";
+import getSwapQuote from "@/src/utils/getSwapQuote";
+import getSwapTransaction from "@/src/utils/getSwapTransaction";
 import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js";
 import base58 from "bs58";
 import { Buffer } from "buffer";
-import useSwapStore from "@/src/store/swap";
-import useWalletStore from "@/src/store/wallet";
-import * as SecureStore from "expo-secure-store";
-import getSwapQuote from "@/src/utils/getSwapQuote";
-import getSwapTransaction from "@/src/utils/getSwapTransaction";
+import "react-native-get-random-values";
 
 export default function useSwap() {
   const connection = new Connection("https://api.mainnet-beta.solana.com");
@@ -39,18 +38,9 @@ export default function useSwap() {
 
   async function executeSwap() {
     try {
-      const keys = await SecureStore.getItemAsync("walletKeys");
-      const currentKeys = JSON.parse(keys!);
-      if (
-        !currentKeys ||
-        !currentWallet ||
-        !sellToken ||
-        !buyToken ||
-        !inAmount
-      )
-        return;
+      if (!currentWallet || !sellToken || !buyToken || !inAmount) return;
       const userPayer = Keypair.fromSecretKey(
-        base58.decode(currentKeys[0].secretKey)
+        base58.decode(currentWallet?.secretKey)
       );
 
       const quoteResponse = await getSwapQuote({

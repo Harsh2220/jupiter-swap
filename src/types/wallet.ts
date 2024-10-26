@@ -26,7 +26,8 @@ export interface Extensions {
 export type Wallet = {
     name: string;
     publicKey: string;
-    hasSeed: boolean;
+    secretKey: string;
+    seed: string
 }
 
 export interface Tag {

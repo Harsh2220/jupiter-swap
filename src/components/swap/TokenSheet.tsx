@@ -1,21 +1,23 @@
 import SearchIcon from "@/src/assets/icons/SearchIcon";
+import { Heading } from "@/src/components/UI/Heading";
 import { white } from "@/src/constants/colors";
 import useSwapStore from "@/src/store/swap";
 import { JupToken } from "@/src/types/wallet";
-import {
-  BottomSheetFlatList,
-  BottomSheetTextInput,
-  useBottomSheetModal,
-} from "@gorhom/bottom-sheet";
-import { useState } from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Heading } from "@/src/components/UI/Heading";
-import TokenCard from "../cards/TokenCard";
-import { useQuery } from "@tanstack/react-query";
 import getTokens from "@/src/utils/getTokens";
+import { BottomSheetFlatList, useBottomSheetModal } from "@gorhom/bottom-sheet";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import {
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import TokenCard from "../cards/TokenCard";
 
 export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
-  const { data: tokens } = useQuery({
+  const { data: tokens, isLoading } = useQuery({
     queryKey: ["tokens"],
     queryFn: () => getTokens(),
   });
@@ -25,6 +27,20 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
   const [filteredTokens, setFilteredTokens] = useState<JupToken[] | null>(
     tokens
   );
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Heading>Loading...</Heading>
+      </View>
+    );
+  }
 
   const renderItem = ({ item }: { item: JupToken }) => {
     return (
@@ -63,7 +79,7 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
     >
       <Heading style={styles.heading}>Choose Token</Heading>
       <View style={styles.inputContainer}>
-        <BottomSheetTextInput
+        <TextInput
           style={styles.input}
           placeholder="Search"
           placeholderTextColor={white[300]}
@@ -76,7 +92,17 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
         contentContainerStyle={{
           gap: 16,
         }}
+        keyExtractor={(item) => item.address.toString()}
         renderItem={renderItem}
+        ListEmptyComponent={
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
+            <Heading style={styles.heading}>No tokens found</Heading>
+          </View>
+        }
       />
     </View>
   );
@@ -87,6 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     textAlign: "center",
+    marginTop: 16,
   },
   inputContainer: {
     backgroundColor: white[600],

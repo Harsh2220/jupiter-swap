@@ -37,7 +37,6 @@ function Button({
   const { width } = useWindowDimensions();
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
       {...props}
       disabled={isLoading || props.disabled}
       style={[
@@ -52,6 +51,7 @@ function Button({
           backgroundColor: variant === "filled" ? color : "transparent",
           borderWidth: 1,
           borderColor: variant === "filled" ? "transparent" : white[300],
+          opacity: props.disabled ? 0.7 : 1,
         },
         props.style,
       ]}
@@ -64,7 +64,7 @@ function Button({
           <Heading
             style={[
               {
-                color: variant === "filled" ? white[700] : black[700],
+                color: black[400],
                 fontSize:
                   size === "small"
                     ? width / 26

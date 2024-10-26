@@ -2,6 +2,7 @@ import { white } from "@/src/constants/colors";
 import { storage } from "@/src/lib/storage";
 import useWalletStore from "@/src/store/wallet";
 import { STORAGE_KEYS } from "@/src/types/storage";
+import getPortfolio from "@/src/utils/getPortfolio";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -9,7 +10,8 @@ import { View } from "react-native";
 
 export default function Loader() {
   const router = useRouter();
-  const { setWallets, setCurrentWallet, setTokens } = useWalletStore();
+  const { setWallets, setCurrentWallet, setTokens, setSolBalance } =
+    useWalletStore();
 
   async function handleWallets() {
     try {
@@ -19,6 +21,17 @@ export default function Loader() {
       } else {
         setWallets(JSON.parse(wallets));
         setCurrentWallet(JSON.parse(wallets)[0]);
+        // const tokens = await getPortfolio(JSON.parse(wallets)[0].publicKey);
+        const tokens = await getPortfolio(
+          "M6wEw5Dy62EWx67HbnLw5VQ4eaZmydXa48Ahx7LzKSG"
+        );
+        console.log(tokens);
+        if (tokens?.result) {
+          if (tokens?.result?.sol_balance) {
+            setSolBalance(tokens?.result?.sol_balance);
+          }
+          setTokens(tokens?.result?.tokens);
+        }
         router.replace("/swap");
       }
     } catch (error) {

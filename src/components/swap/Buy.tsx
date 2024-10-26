@@ -79,21 +79,30 @@ export default function Buy() {
                   contentFit="cover"
                 />
               )}
-              <View
-                style={{
-                  marginLeft: 10,
-                }}
-              >
+              {!buyToken ? (
                 <Heading
                   style={{
                     fontSize: 16,
-                    lineHeight: 16,
                     fontWeight: "600",
+                    marginLeft: 10,
                   }}
                 >
-                  {buyToken ? buyToken.name : "Select Token"}
+                  Select Token
                 </Heading>
-                {buyToken && (
+              ) : (
+                <View
+                  style={{
+                    marginLeft: 6,
+                  }}
+                >
+                  <Heading
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {buyToken.name}
+                  </Heading>
                   <Paragraph
                     style={{
                       fontSize: 12,
@@ -103,8 +112,8 @@ export default function Buy() {
                   >
                     {buyToken?.symbol}
                   </Paragraph>
-                )}
-              </View>
+                </View>
+              )}
             </View>
             <ChevronDown width={24} height={24} color={"black"} />
           </TouchableOpacity>

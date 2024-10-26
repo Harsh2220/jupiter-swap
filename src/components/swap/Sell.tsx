@@ -71,21 +71,30 @@ export default function Sell() {
                   contentFit="cover"
                 />
               )}
-              <View
-                style={{
-                  marginLeft: 10,
-                }}
-              >
+              {!sellToken ? (
                 <Heading
                   style={{
                     fontSize: 16,
-                    lineHeight: 16,
                     fontWeight: "600",
+                    marginLeft: 10,
                   }}
                 >
-                  {sellToken ? sellToken.name : "Select Token"}
+                  Select Token
                 </Heading>
-                {sellToken && (
+              ) : (
+                <View
+                  style={{
+                    marginLeft: 6,
+                  }}
+                >
+                  <Heading
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                    }}
+                  >
+                    {sellToken.name}
+                  </Heading>
                   <Paragraph
                     style={{
                       fontSize: 12,
@@ -95,8 +104,8 @@ export default function Sell() {
                   >
                     {sellToken?.symbol}
                   </Paragraph>
-                )}
-              </View>
+                </View>
+              )}
             </View>
             <ChevronDown width={24} height={24} color={"black"} />
           </TouchableOpacity>

@@ -12,6 +12,7 @@ import { Keypair } from "@solana/web3.js";
 import { useRouter } from "expo-router";
 import { storage } from "@/src/lib/storage";
 import { STORAGE_KEYS } from "@/src/types/storage";
+import * as SecureStore from "expo-secure-store";
 
 export default function Login() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -32,17 +33,9 @@ export default function Login() {
         seed: mnemonic,
       };
 
-      const wallets = [
-        {
-          name: "wallet 1",
-          publicKey: keypair.publicKey.toBase58(),
-          hasSeed: true,
-        },
-      ];
+      storage.set(STORAGE_KEYS.WALLETS, JSON.stringify([wallet]));
 
-      storage.set(STORAGE_KEYS.WALLETS, JSON.stringify(wallets));
-
-      router.push("/swap");
+      router.replace("/swap");
     } catch (error) {
       console.log("failed to get wallet", error);
     } finally {
@@ -52,16 +45,6 @@ export default function Login() {
 
   return (
     <Container>
-      <LinearGradient
-        colors={["transparent", white[700]]}
-        style={{
-          position: "absolute",
-          top: 0,
-          height: height,
-          width: width,
-          zIndex: 1,
-        }}
-      />
       <Image
         source={require("../src/assets/images/login.png")}
         style={{
