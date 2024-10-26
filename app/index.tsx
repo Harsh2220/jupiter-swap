@@ -21,11 +21,7 @@ export default function Loader() {
       } else {
         setWallets(JSON.parse(wallets));
         setCurrentWallet(JSON.parse(wallets)[0]);
-        // const tokens = await getPortfolio(JSON.parse(wallets)[0].publicKey);
-        const tokens = await getPortfolio(
-          "M6wEw5Dy62EWx67HbnLw5VQ4eaZmydXa48Ahx7LzKSG"
-        );
-        console.log(tokens);
+        const tokens = await getPortfolio(JSON.parse(wallets)[0].publicKey);
         if (tokens?.result) {
           if (tokens?.result?.sol_balance) {
             setSolBalance(tokens?.result?.sol_balance);

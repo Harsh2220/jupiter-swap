@@ -12,7 +12,7 @@ import { useRef } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function Swap() {
-  const { solBalance, tokens } = useWalletStore();
+  const { solBalance, tokens, currentWallet } = useWalletStore();
   const { inAmount, setError, setTxHash, sellToken, buyToken } = useSwapStore();
   const swapRef = useRef<BottomSheetModal>(null);
 
@@ -46,13 +46,14 @@ export default function Swap() {
         const token = tokens?.find(
           (token) => token?.address === sellToken?.address
         );
-
         if (!token || token?.balance < parseFloat(inAmount))
           return "Insufficient balance";
       }
     }
     return "Confirm";
   }
+
+  console.log(currentWallet?.publicKey, currentWallet?.secretKey);
 
   return (
     <Container>

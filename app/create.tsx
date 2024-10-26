@@ -1,18 +1,16 @@
 import Button from "@/src/components/UI/Button";
 import Container from "@/src/components/UI/Container";
 import { Heading } from "@/src/components/UI/Heading";
-import { black, white } from "@/src/constants/colors";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
-import { View, useWindowDimensions } from "react-native";
-import * as Bip39 from "bip39";
-import bs58 from "bs58";
-import { Keypair } from "@solana/web3.js";
-import { useRouter } from "expo-router";
+import { black } from "@/src/constants/colors";
 import { storage } from "@/src/lib/storage";
 import { STORAGE_KEYS } from "@/src/types/storage";
-import * as SecureStore from "expo-secure-store";
+import { Keypair } from "@solana/web3.js";
+import * as Bip39 from "bip39";
+import bs58 from "bs58";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import React from "react";
+import { View, useWindowDimensions } from "react-native";
 
 export default function Login() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);

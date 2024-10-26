@@ -185,7 +185,7 @@ function TokenPreview({ source }: { source: boolean }) {
   React.useEffect(() => {
     const url = source ? sellToken?.logoURI : buyToken?.logoURI;
     getColors(url!, {
-      fallback: "#228B22",
+      fallback: "#EDEFF2",
       cache: true,
       key: url,
     }).then((data: any) => {

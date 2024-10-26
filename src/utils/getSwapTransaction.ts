@@ -1,9 +1,6 @@
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-
 type SwapTransactionParams = {
     quoteResponse: any,
     publicKey: string,
-    // priorityFees: string
 }
 
 export default async function getSwapTransaction(params: SwapTransactionParams) {
@@ -16,7 +13,6 @@ export default async function getSwapTransaction(params: SwapTransactionParams) 
             quoteResponse: params.quoteResponse,
             userPublicKey: params.publicKey,
             wrapAndUnwrapSol: true,
-            // prioritizationFeeLamports: Number(params.priorityFees) * LAMPORTS_PER_SOL,
         })
     })
     const data = await res.json();
