@@ -1,16 +1,18 @@
 import { create } from "zustand";
-import { IToken, Wallet } from "@/src/types/wallet";
+import { IToken, JupToken, Wallet } from "@/src/types/wallet";
 import { Token } from "@/src/types/shyft";
 
 interface IWallet {
     currentWallet: null | Wallet;
     wallets: null | Wallet[];
     tokens: null | Token[];
+    jupTokens: null | JupToken[]
     solBalance: number;
     setCurrentWallet: (wallet: Wallet) => void;
     setWallets: (wallets: Wallet[]) => void;
     setTokens: (tokens: Token[] | null) => void
     setSolBalance: (solBalance: number) => void
+    setJupTokens: (jupTokens: JupToken[]) => void
 }
 
 const useWalletStore = create<IWallet>((set) => ({
@@ -18,6 +20,7 @@ const useWalletStore = create<IWallet>((set) => ({
     tokens: null,
     wallets: null,
     solBalance: 0,
+    jupTokens: null,
     setCurrentWallet: (currentWallet) =>
         set({
             currentWallet: currentWallet,
@@ -33,6 +36,10 @@ const useWalletStore = create<IWallet>((set) => ({
     setSolBalance: (solBalance) =>
         set({
             solBalance: solBalance,
+        }),
+    setJupTokens: (jupTokens) =>
+        set({
+            jupTokens: jupTokens,
         }),
 }));
 

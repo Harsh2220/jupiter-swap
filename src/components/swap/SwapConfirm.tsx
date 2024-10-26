@@ -56,94 +56,25 @@ export default function SwapConfirm() {
     <BottomSheetView>
       <View style={styles.container}>
         <Heading style={styles.transactionAmount}>Transaction Preview</Heading>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: 16,
-            width: "100%",
-          }}
-        >
+        <View style={styles.tokensContainer}>
           <TokenPreview source={true} />
-          <View
-            style={{
-              backgroundColor: "white",
-              marginHorizontal: -12,
-              zIndex: 1,
-              borderRadius: 16,
-              padding: 4,
-            }}
-          >
+          <View style={styles.doubleArrowRightIconContainer}>
             <DoubleArrowRight width={20} height={20} color={white[200]} />
           </View>
           <TokenPreview source={false} />
         </View>
-        <View
-          style={{
-            borderRadius: 16,
-            backgroundColor: "#EDEFF2",
-            paddingVertical: 12,
-            paddingHorizontal: 18,
-            width: "100%",
-            marginTop: 16,
-            paddingBottom: 18,
-          }}
-        >
-          <Heading
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              textAlign: "center",
-            }}
-          >
-            Fees Preview
-          </Heading>
-          <View
-            style={{
-              marginTop: 14,
-              gap: 8,
-            }}
-          >
+        <View style={styles.feesPreviewContainer}>
+          <Heading style={styles.feesPreviewTitle}>Fees Preview</Heading>
+          <View style={styles.dataContainter}>
             {DATA.map((el, index) => (
-              <View
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Paragraph
-                  style={{
-                    color: black[200],
-                    fontSize: 12,
-                    fontWeight: "500",
-                  }}
-                >
-                  {el.title}
-                </Paragraph>
-                <Heading
-                  style={{
-                    fontSize: 12,
-                    fontWeight: "700",
-                    color: black[800],
-                  }}
-                >
-                  {el.value}
-                </Heading>
+              <View key={index} style={styles.singleRawDataContainer}>
+                <Paragraph style={styles.dataTitle}>{el.title}</Paragraph>
+                <Heading style={styles.dataValue}>{el.value}</Heading>
               </View>
             ))}
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "100%",
-            marginTop: 16,
-          }}
-        >
+        <View style={styles.buttonsContainer}>
           {!isLoading && (
             <Button
               style={{
@@ -282,5 +213,58 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginBottom: 8,
+  },
+  tokensContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 16,
+    width: "100%",
+  },
+  doubleArrowRightIconContainer: {
+    backgroundColor: "white",
+    marginHorizontal: -12,
+    zIndex: 1,
+    borderRadius: 16,
+    padding: 4,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 16,
+  },
+  feesPreviewContainer: {
+    borderRadius: 16,
+    backgroundColor: "#EDEFF2",
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    width: "100%",
+    marginTop: 16,
+    paddingBottom: 18,
+  },
+  feesPreviewTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  dataContainter: {
+    marginTop: 14,
+    gap: 8,
+  },
+  singleRawDataContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  dataTitle: {
+    color: black[200],
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  dataValue: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: black[800],
   },
 });

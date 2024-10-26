@@ -2,6 +2,7 @@ import React from "react";
 import Button from "@/src/components/UI/Button";
 import useWalletStore from "@/src/store/wallet";
 import useSwapStore from "@/src/store/swap";
+import { StyleSheet } from "react-native";
 
 export default function ConfirmButton({ onPress }: { onPress: () => void }) {
   const { solBalance, tokens } = useWalletStore();
@@ -46,16 +47,16 @@ export default function ConfirmButton({ onPress }: { onPress: () => void }) {
   }
 
   return (
-    <Button
-      onPress={onPress}
-      disabled={!handleCases()}
-      style={{
-        marginTop: 16,
-        marginHorizontal: 16,
-        marginBottom: 32,
-      }}
-    >
+    <Button onPress={onPress} disabled={!handleCases()} style={styles.button}>
       {getDynamicTitle()}
     </Button>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    marginTop: 16,
+    marginHorizontal: 16,
+    marginBottom: 32,
+  },
+});

@@ -1,11 +1,11 @@
 import SearchIcon from "@/src/assets/icons/SearchIcon";
 import { Heading } from "@/src/components/UI/Heading";
+import TokenCard from "@/src/components/cards/TokenCard";
 import { white } from "@/src/constants/colors";
 import useSwapStore from "@/src/store/swap";
+import useWalletStore from "@/src/store/wallet";
 import { JupToken } from "@/src/types/wallet";
-import getTokens from "@/src/utils/getTokens";
 import { BottomSheetFlatList, useBottomSheetModal } from "@gorhom/bottom-sheet";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   Platform,
@@ -14,33 +14,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import TokenCard from "@/src/components/cards/TokenCard";
 
 export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
-  const { data: tokens, isLoading } = useQuery({
-    queryKey: ["tokens"],
-    queryFn: () => getTokens(),
-  });
   const { dismiss } = useBottomSheetModal();
+  const { jupTokens } = useWalletStore();
   const { setBuyToken, setSellToken, sellToken, buyToken } = useSwapStore();
   const [searchItem, setSearchItem] = useState("");
   const [filteredTokens, setFilteredTokens] = useState<JupToken[] | null>(
-    tokens
+    jupTokens
   );
-
-  if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Heading>Loading...</Heading>
-      </View>
-    );
-  }
 
   const renderItem = ({ item }: { item: JupToken }) => {
     return (
@@ -69,24 +51,22 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
     );
   };
 
+  const emptyListComponent = () => {
+    return <Heading style={styles.emptyListHeader}>No tokens found</Heading>;
+  };
+
   const handleInputChange = (e: { nativeEvent: { text: string } }) => {
     const searchTerm = e.nativeEvent.text;
     setSearchItem(searchTerm);
-    if (!tokens) return;
-    const filteredItems = tokens.filter((token: JupToken) =>
+    if (!jupTokens) return;
+    const filteredItems = jupTokens.filter((token: JupToken) =>
       token.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredTokens(filteredItems);
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        padding: 16,
-        gap: 16,
-      }}
-    >
+    <View style={styles.container}>
       <Heading style={styles.heading}>Choose Token</Heading>
       <View style={styles.inputContainer}>
         <TextInput
@@ -99,31 +79,28 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
       </View>
       <BottomSheetFlatList
         data={filteredTokens}
-        contentContainerStyle={{
-          gap: 16,
-        }}
-        keyExtractor={(item) => item.address.toString()}
+        contentContainerStyle={styles.contentContainerStyle}
+        keyExtractor={(item: JupToken) => item.address.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={
-          <View
-            style={{
-              flex: 1,
-            }}
-          >
-            <Heading style={styles.heading}>No tokens found</Heading>
-          </View>
-        }
+        ListEmptyComponent={emptyListComponent}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    gap: 16,
+  },
+  contentContainerStyle: {
+    gap: 16,
+  },
   heading: {
     fontSize: 20,
     fontWeight: "700",
     textAlign: "center",
-    marginTop: 16,
   },
   inputContainer: {
     backgroundColor: white[600],
@@ -139,5 +116,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: Platform.OS === "ios" ? 10 : 8,
     fontWeight: "600",
+  },
+  emptyListHeader: {
+    marginVertical: 16,
+    fontSize: 20,
+    fontWeight: "700",
+    textAlign: "center",
+    color: white[200],
   },
 });

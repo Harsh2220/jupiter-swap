@@ -8,11 +8,12 @@ import SwapConfirmSheet from "@/src/components/swap/SwapConfirmSheet";
 import useSwapStore from "@/src/store/swap";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useCallback, useRef } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function Swap() {
-  const { setError, setTxHash } = useSwapStore();
   const swapRef = useRef<BottomSheetModal>(null);
+  const setError = useSwapStore((state) => state.setError);
+  const setTxHash = useSwapStore((state) => state.setTxHash);
 
   const handleConfirmSwap = useCallback(() => {
     setError(false);
@@ -22,18 +23,8 @@ export default function Swap() {
 
   return (
     <Container>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          padding: 16,
-          justifyContent: "space-between",
-        }}
-      >
-        <View
-          style={{
-            gap: 16,
-          }}
-        >
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.actionsContainer}>
           <Sell />
           <SwapDivider />
           <Buy />
@@ -41,9 +32,7 @@ export default function Swap() {
       </ScrollView>
       <ConfirmButton onPress={handleConfirmSwap} />
       <Sheet
-        style={{
-          margin: 16,
-        }}
+        style={styles.sheetStyle}
         ref={swapRef}
         enableDynamicSizing
         detached={true}
@@ -54,3 +43,17 @@ export default function Swap() {
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    padding: 16,
+    justifyContent: "space-between",
+  },
+  actionsContainer: {
+    gap: 16,
+  },
+  sheetStyle: {
+    margin: 16,
+  },
+});

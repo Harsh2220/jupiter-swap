@@ -1,48 +1,30 @@
 import { BottomSheetView, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import LottieView from "lottie-react-native";
-import React from "react";
-import { View } from "react-native";
+import React, { useCallback } from "react";
+import { StyleSheet, View } from "react-native";
 import { Heading } from "../UI/Heading";
 import Button from "../UI/Button";
 
 function SwapError() {
   const { dismiss } = useBottomSheetModal();
 
+  const handleClose = useCallback(() => {
+    dismiss();
+  }, []);
+
   return (
     <BottomSheetView>
-      <View
-        style={{
-          padding: 16,
-          alignItems: "center",
-          gap: 24,
-        }}
-      >
+      <View style={styles.container}>
         <LottieView
           source={require("../../assets/error.json")}
-          style={{
-            width: 150,
-            height: 150,
-          }}
+          style={styles.lottie}
           autoPlay
           loop={false}
         />
-        <Heading
-          style={{
-            fontSize: 24,
-            fontWeight: "600",
-            textAlign: "center",
-          }}
-        >
+        <Heading style={styles.title}>
           We are unable to process your transaction
         </Heading>
-        <Button
-          onPress={() => {
-            dismiss();
-          }}
-          style={{
-            width: "100%",
-          }}
-        >
+        <Button onPress={handleClose} style={styles.button}>
           Close
         </Button>
       </View>
@@ -51,3 +33,23 @@ function SwapError() {
 }
 
 export default React.memo(SwapError);
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    alignItems: "center",
+    gap: 24,
+  },
+  lottie: {
+    width: 150,
+    height: 150,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  button: {
+    width: "100%",
+  },
+});
