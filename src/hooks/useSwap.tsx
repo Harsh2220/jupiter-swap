@@ -6,20 +6,21 @@ import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js";
 import base58 from "bs58";
 import { Buffer } from "buffer";
 import "react-native-get-random-values";
+import getPortfolio from "@/src/utils/getPortfolio";
 
 export default function useSwap() {
   const connection = new Connection("https://api.mainnet-beta.solana.com");
-  const { currentWallet } = useWalletStore();
 
-  const {
-    inAmount,
-    sellToken,
-    buyToken,
-    setTxHash,
-    setError,
-    setOutAmount,
-    setGasFees,
-  } = useSwapStore();
+  const currentWallet = useWalletStore((state) => state.currentWallet);
+  const setTokens = useWalletStore((state) => state.setTokens);
+  const setSolBalance = useWalletStore((state) => state.setSolBalance);
+  const inAmount = useSwapStore((state) => state.inAmount);
+  const sellToken = useSwapStore((state) => state.sellToken);
+  const buyToken = useSwapStore((state) => state.buyToken);
+  const setTxHash = useSwapStore((state) => state.setTxHash);
+  const setError = useSwapStore((state) => state.setError);
+  const setOutAmount = useSwapStore((state) => state.setOutAmount);
+  const setGasFees = useSwapStore((state) => state.setGasFees);
 
   async function quote() {
     try {
@@ -98,6 +99,15 @@ export default function useSwap() {
         lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
         signature: txid,
       });
+
+      const portfolio = await getPortfolio(currentWallet?.publicKey);
+
+      if (portfolio?.result) {
+        if (portfolio?.result?.sol_balance) {
+          setSolBalance(portfolio?.result?.sol_balance);
+        }
+        setTokens(portfolio?.result?.tokens);
+      }
 
       setTxHash(txid);
     } catch (error) {

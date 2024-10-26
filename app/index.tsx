@@ -4,10 +4,10 @@ import useWalletStore from "@/src/store/wallet";
 import { STORAGE_KEYS } from "@/src/types/storage";
 import getPortfolio from "@/src/utils/getPortfolio";
 import getTokens from "@/src/utils/getTokens";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function Loader() {
   const router = useRouter();
@@ -27,15 +27,15 @@ export default function Loader() {
       } else {
         setWallets(JSON.parse(wallets));
         setCurrentWallet(JSON.parse(wallets)[0]);
-        const [tokens, jupTokens] = await Promise.all([
+        const [portfolio, jupTokens] = await Promise.all([
           getPortfolio(JSON.parse(wallets)[0].publicKey),
           getTokens(),
         ]);
-        if (tokens?.result) {
-          if (tokens?.result?.sol_balance) {
-            setSolBalance(tokens?.result?.sol_balance);
+        if (portfolio?.result) {
+          if (portfolio?.result?.sol_balance) {
+            setSolBalance(portfolio?.result?.sol_balance);
           }
-          setTokens(tokens?.result?.tokens);
+          setTokens(portfolio?.result?.tokens);
         }
         setJupTokens(jupTokens);
         router.replace("/swap");
@@ -52,21 +52,25 @@ export default function Loader() {
   }, []);
 
   return (
-    <View
-      style={{
-        backgroundColor: white[800],
-      }}
-    >
-      <Image
-        source={{
-          uri: "https://assets-v2.lottiefiles.com/a/35dde376-1178-11ee-9ed9-5fa2debad506/pEm0ztvcpk.gif",
-        }}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        contentFit="contain"
+    <View style={styles.container}>
+      <LottieView
+        source={require("../src/assets/loader.json")}
+        style={styles.lottie}
+        autoPlay
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: white[800],
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  lottie: {
+    width: 200,
+    height: 200,
+  },
+});
