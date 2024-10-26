@@ -22,6 +22,7 @@ export default function Loader() {
         setWallets(JSON.parse(wallets));
         setCurrentWallet(JSON.parse(wallets)[0]);
         const tokens = await getPortfolio(JSON.parse(wallets)[0].publicKey);
+        console.log(tokens);
         if (tokens?.result) {
           if (tokens?.result?.sol_balance) {
             setSolBalance(tokens?.result?.sol_balance);

@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import TokenCard from "../cards/TokenCard";
+import TokenCard from "@/src/components/cards/TokenCard";
 
 export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
   const { data: tokens, isLoading } = useQuery({
@@ -22,7 +22,7 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
     queryFn: () => getTokens(),
   });
   const { dismiss } = useBottomSheetModal();
-  const { setBuyToken, setSellToken } = useSwapStore();
+  const { setBuyToken, setSellToken, sellToken, buyToken } = useSwapStore();
   const [searchItem, setSearchItem] = useState("");
   const [filteredTokens, setFilteredTokens] = useState<JupToken[] | null>(
     tokens
@@ -47,9 +47,19 @@ export default function TokenSheet({ isBuyToken }: { isBuyToken: boolean }) {
       <TouchableOpacity
         onPress={async () => {
           if (isBuyToken) {
-            setBuyToken(item);
+            if (sellToken === item) {
+              setSellToken(buyToken!);
+              setBuyToken(item);
+            } else {
+              setBuyToken(item);
+            }
           } else {
-            setSellToken(item);
+            if (buyToken === item) {
+              setBuyToken(sellToken!);
+              setSellToken(item);
+            } else {
+              setSellToken(item);
+            }
           }
           dismiss();
         }}
