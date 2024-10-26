@@ -15,6 +15,7 @@ export default function Sell() {
   const snapPoints = React.useMemo(() => ["90%"], []);
   const sellToken = useSwapStore((state) => state.sellToken);
   const setInAmount = useSwapStore((state) => state.setInAmount);
+  const setOutAmount = useSwapStore((state) => state.setOutAmount);
 
   return (
     <>
@@ -53,7 +54,12 @@ export default function Sell() {
               keyboardType="numeric"
               textAlignVertical="center"
               textAlign="center"
-              onChangeText={(text) => setInAmount(text)}
+              onChangeText={(text) => {
+                if (text.length === 0) {
+                  setOutAmount("");
+                }
+                setInAmount(text);
+              }}
               style={styles.input}
               placeholderTextColor={white[200]}
               placeholder="00"

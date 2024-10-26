@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@/src/components/UI/Button";
 import useWalletStore from "@/src/store/wallet";
 import useSwapStore from "@/src/store/swap";
@@ -6,23 +6,25 @@ import { StyleSheet } from "react-native";
 
 export default function ConfirmButton({ onPress }: { onPress: () => void }) {
   const { solBalance, tokens } = useWalletStore();
-  const { inAmount, sellToken, buyToken } = useSwapStore();
+  const inAmount = useSwapStore((state) => state.inAmount);
+  const sellToken = useSwapStore((state) => state.sellToken);
+  const buyToken = useSwapStore((state) => state.buyToken);
 
   function handleCases() {
     if (!sellToken || !buyToken || !inAmount || solBalance < 0.002)
       return false;
     if (sellToken && buyToken) {
-      if (tokens?.length === 0) return false;
-    } else if (
-      sellToken?.address === "So11111111111111111111111111111111111111112"
-    ) {
-      if (solBalance < parseInt(inAmount)) return false;
-    } else {
-      const token = tokens?.find(
-        (token) => token?.address === sellToken?.address
-      );
+      if (
+        sellToken?.address === "So11111111111111111111111111111111111111112"
+      ) {
+        if (solBalance < parseInt(inAmount)) return false;
+      } else {
+        const token = tokens?.find(
+          (token) => token?.address === sellToken?.address
+        );
 
-      if (!token || token?.balance < parseFloat(inAmount)) return false;
+        if (!token || token?.balance < parseFloat(inAmount)) return false;
+      }
     }
     return true;
   }
@@ -30,8 +32,7 @@ export default function ConfirmButton({ onPress }: { onPress: () => void }) {
   function getDynamicTitle(): String {
     if (solBalance < 0.002) return "Insufficient SOL";
     if (sellToken && buyToken) {
-      if (tokens?.length === 0) return "Insufficient balance";
-      else if (
+      if (
         sellToken?.address === "So11111111111111111111111111111111111111112"
       ) {
         if (solBalance < parseInt(inAmount)) return "Insufficient balance";
@@ -46,8 +47,10 @@ export default function ConfirmButton({ onPress }: { onPress: () => void }) {
     return "Confirm";
   }
 
+  const data = handleCases();
+
   return (
-    <Button onPress={onPress} disabled={!handleCases()} style={styles.button}>
+    <Button onPress={onPress} disabled={!data} style={styles.button}>
       {getDynamicTitle()}
     </Button>
   );

@@ -38,6 +38,7 @@ function Button({
   return (
     <TouchableOpacity
       {...props}
+      activeOpacity={0.7}
       disabled={isLoading || props.disabled}
       style={[
         {

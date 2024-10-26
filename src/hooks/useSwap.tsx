@@ -1,16 +1,15 @@
 import useSwapStore from "@/src/store/swap";
 import useWalletStore from "@/src/store/wallet";
+import getPortfolio from "@/src/utils/getPortfolio";
 import getSwapQuote from "@/src/utils/getSwapQuote";
 import getSwapTransaction from "@/src/utils/getSwapTransaction";
-import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js";
+import { Keypair, VersionedTransaction } from "@solana/web3.js";
 import base58 from "bs58";
 import { Buffer } from "buffer";
 import "react-native-get-random-values";
-import getPortfolio from "@/src/utils/getPortfolio";
+import connection from "../lib/connection";
 
 export default function useSwap() {
-  const connection = new Connection("https://api.mainnet-beta.solana.com");
-
   const currentWallet = useWalletStore((state) => state.currentWallet);
   const setTokens = useWalletStore((state) => state.setTokens);
   const setSolBalance = useWalletStore((state) => state.setSolBalance);
@@ -86,18 +85,24 @@ export default function useSwap() {
 
       transaction.sign([userPayer]);
 
-      const rawTransaction = transaction.serialize();
-      const latestBlockHash = await connection.getLatestBlockhash();
+      const { value: simulatedTransactionResponse } =
+        await connection.simulateTransaction(transaction, {
+          replaceRecentBlockhash: true,
+          commitment: "processed",
+        });
+      const { err, logs } = simulatedTransactionResponse;
+
+      if (err) {
+        console.error("Simulation Error:");
+        console.error({ err, logs });
+        return;
+      }
+
+      const rawTransaction = Buffer.from(transaction.serialize());
 
       const txid = await connection.sendRawTransaction(rawTransaction, {
         skipPreflight: true,
         maxRetries: 2,
-      });
-
-      await connection.confirmTransaction({
-        blockhash: latestBlockHash.blockhash,
-        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-        signature: txid,
       });
 
       const portfolio = await getPortfolio(currentWallet?.publicKey);
